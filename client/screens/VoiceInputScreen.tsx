@@ -77,8 +77,20 @@ export default function VoiceInputScreen() {
 
   const startRecording = async () => {
     try {
+      if (!hasPermission) {
+        Alert.alert("Microphone Access", "Please enable microphone access to record.");
+        return;
+      }
+
       if (Platform.OS !== "web") {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      }
+
+      if (Platform.OS === "ios") {
+        await AudioModule.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
       }
 
       audioRecorder.record();
